@@ -2,5 +2,4 @@
 
 public record OrderItemRequest(
     Guid ItemId,
-    decimal Price,
     uint Count);

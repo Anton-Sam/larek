@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Ordering.Application.Features.Orders.Commands.AddOrderItems;
 using Ordering.Application.Features.Orders.Commands.CancelOrder;
+using Ordering.Application.Features.Orders.Commands.CompleteOrder;
 using Ordering.Application.Features.Orders.Commands.CreateOrder;
-using Ordering.Application.Features.Orders.Commands.PickupOrder;
 using Ordering.Application.Features.Orders.Queries.GetOrderById;
 using Ordering.Application.Features.Orders.Queries.GetOrders;
 using Ordering.WebApi.Dtos.Requests.Orders;
@@ -55,7 +55,7 @@ public class OrdersController : ApiController
             response);
     }
 
-    [HttpPut("{id}/item")]
+    [HttpPost("{id}/item")]
     public async Task<IActionResult> AddOrderItem(
         Guid id,
         [FromBody] OrderItemRequest request,
@@ -64,7 +64,6 @@ public class OrdersController : ApiController
         var order = await Sender.Send(new AddOrderItemsCommand(
             id,
             request.ItemId,
-            request.Price,
             request.Count), cancellationToken);
 
         return Ok();
@@ -135,25 +134,25 @@ public class OrdersController : ApiController
         return Ok(response);
     }
 
-    [HttpPut]
+    [HttpPatch("{id}/complete")]
     public async Task<IActionResult> PickupOrder(
-        [FromBody] PickupOrderRequest request,
+        Guid id,
         CancellationToken cancellationToken)
     {
         var _ = await Sender.Send(
-            new PickupOrderCommand(request.OrderId),
+            new CompleteOrderCommand(id),
             cancellationToken);
 
         return Ok();
     }
 
-    [HttpDelete]
+    [HttpPatch("{id}/cancel")]
     public async Task<IActionResult> CancelOrder(
-        [FromBody] CancelOrderRequest request,
+        Guid id,
         CancellationToken cancellationToken)
     {
         var _ = await Sender.Send(
-            new CancelOrderCommand(request.OrderId),
+            new CancelOrderCommand(id),
             cancellationToken);
 
         return Ok();

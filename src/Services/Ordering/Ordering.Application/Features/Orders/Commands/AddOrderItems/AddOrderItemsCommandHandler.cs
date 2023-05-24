@@ -29,8 +29,9 @@ public class AddOrderItemsCommandHandler
             throw new NotFoundException("Order not found");
 
         //HTTP service
-
-        order.AddOrderItem(request.ItemId, request.Price, request.Count);
+        //TODO
+        decimal price = 0;
+        order.AddOrderItem(request.ItemId, price, request.Count);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return order;
