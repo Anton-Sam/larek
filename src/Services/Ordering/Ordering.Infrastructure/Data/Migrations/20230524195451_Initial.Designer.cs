@@ -12,7 +12,7 @@ using Ordering.Infrastructure.Data;
 namespace Ordering.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230524120723_Initial")]
+    [Migration("20230524195451_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace Ordering.Infrastructure.Data.Migrations
                     b.Property<int>("DeliveryType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OrderStatus")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<long>("TotalCount")

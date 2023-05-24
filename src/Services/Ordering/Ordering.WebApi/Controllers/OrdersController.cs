@@ -45,7 +45,7 @@ public class OrdersController : ApiController
             order.Address.ZipCode,
             order.TotalCount,
             order.TotalPrice,
-            order.OrderStatus,
+            order.Status,
             order.DeliveryType,
             items);
 
@@ -96,7 +96,7 @@ public class OrdersController : ApiController
                 ord.Address.ZipCode,
                 ord.TotalCount,
                 ord.TotalPrice,
-                ord.OrderStatus,
+                ord.Status,
                 ord.DeliveryType,
                 items);
         });
@@ -127,7 +127,7 @@ public class OrdersController : ApiController
             order.Address.ZipCode,
             order.TotalCount,
             order.TotalPrice,
-            order.OrderStatus,
+            order.Status,
             order.DeliveryType,
             items);
 

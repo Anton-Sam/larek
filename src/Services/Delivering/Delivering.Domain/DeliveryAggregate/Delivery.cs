@@ -30,29 +30,36 @@ public sealed class Delivery : AggregateRoot<Guid>
 
     public void StartProcess(Guid courierId)
     {
-        if (Status == DeliveryStatus.ReadyToProcess)
+        if (Status != DeliveryStatus.ReadyToProcess)
         {
-            CourierId = courierId;
-            UpdatedAt = DateTime.UtcNow;
-            Status = DeliveryStatus.InProgress;
+            throw new DomainException(
+                string.Format("Invalid delivery status: {0}", Status));
         }
+
+        CourierId = courierId;
+        UpdatedAt = DateTime.UtcNow;
+        Status = DeliveryStatus.InProgress;
     }
 
     public void Complete()
     {
-        if (Status == DeliveryStatus.InProgress)
+        if (Status != DeliveryStatus.InProgress)
         {
-            UpdatedAt = DateTime.UtcNow;
-            Status = DeliveryStatus.Completed;
+            throw new DomainException(
+                string.Format("Invalid delivery status: {0}", Status));
         }
+        UpdatedAt = DateTime.UtcNow;
+        Status = DeliveryStatus.Completed;
     }
 
     public void Cancel()
     {
-        if (Status != DeliveryStatus.Completed)
+        if (Status == DeliveryStatus.Completed)
         {
-            UpdatedAt = DateTime.UtcNow;
-            Status = DeliveryStatus.Canceled;
+            throw new DomainException(
+                string.Format("Invalid delivery status: {0}", Status));
         }
+        UpdatedAt = DateTime.UtcNow;
+        Status = DeliveryStatus.Canceled;
     }
 }

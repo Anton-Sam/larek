@@ -35,7 +35,7 @@ namespace Ordering.Infrastructure.Data.Migrations
                     Address_Country = table.Column<string>(type: "text", nullable: false),
                     Address_ZipCode = table.Column<string>(type: "text", nullable: false),
                     DeliveryType = table.Column<int>(type: "integer", nullable: false),
-                    OrderStatus = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     TotalCount = table.Column<long>(type: "bigint", nullable: false),
