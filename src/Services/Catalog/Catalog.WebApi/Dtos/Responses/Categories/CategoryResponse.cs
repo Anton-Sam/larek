@@ -1,3 +1,3 @@
-﻿namespace Catalog.WebApi.Controllers.Dtos.Responses.Categories;
+﻿namespace Catalog.WebApi.Dtos.Responses.Categories;
 
 public record CategoryResponse(Guid Id, string Name);

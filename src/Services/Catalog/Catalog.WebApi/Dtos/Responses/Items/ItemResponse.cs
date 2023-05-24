@@ -1,4 +1,4 @@
-﻿namespace Catalog.WebApi.Controllers.Dtos.Responses.Items;
+﻿namespace Catalog.WebApi.Dtos.Responses.Items;
 
 public record ItemResponse(
     Guid Id,

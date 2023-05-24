@@ -1,7 +1,7 @@
 ﻿using Catalog.Application.Features.Categories.Commands.CreateCategory;
 using Catalog.Application.Features.Categories.Queries.GetAllCategories;
-using Catalog.WebApi.Controllers.Dtos.Requests.Categories;
-using Catalog.WebApi.Controllers.Dtos.Responses.Categories;
+using Catalog.WebApi.Dtos.Requests.Categories;
+using Catalog.WebApi.Dtos.Responses.Categories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,4 @@
-﻿namespace Catalog.WebApi.Controllers.Dtos.Requests.Items;
+﻿namespace Catalog.WebApi.Dtos.Requests.Items;
 
 public record CreateItemRequest(
     Guid BrandId,

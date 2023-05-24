@@ -1,7 +1,7 @@
 ﻿using Catalog.Application.Features.Brands.Commands.CreateBrand;
 using Catalog.Application.Features.Brands.Queries.GetAllBrands;
-using Catalog.WebApi.Controllers.Dtos.Requests.Brands;
-using Catalog.WebApi.Controllers.Dtos.Responses.Brands;
+using Catalog.WebApi.Dtos.Requests.Brands;
+using Catalog.WebApi.Dtos.Responses.Brands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

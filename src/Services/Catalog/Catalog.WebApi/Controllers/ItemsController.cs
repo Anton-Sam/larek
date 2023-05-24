@@ -1,9 +1,8 @@
 ﻿using Catalog.Application.Features.Items.Commands.CreateItem;
 using Catalog.Application.Features.Items.Commands.UpdateAvailableItemCount;
 using Catalog.Application.Features.Items.Queries.GetItems;
-using Catalog.WebApi.Controllers.Dtos.Requests.Items;
-using Catalog.WebApi.Controllers.Dtos.Responses.Items;
 using Catalog.WebApi.Dtos.Requests.Items;
+using Catalog.WebApi.Dtos.Responses.Items;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
