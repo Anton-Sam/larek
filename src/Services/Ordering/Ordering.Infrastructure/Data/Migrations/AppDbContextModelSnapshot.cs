@@ -53,7 +53,7 @@ namespace Ordering.Infrastructure.Data.Migrations
                     b.Property<int>("DeliveryType")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OrderStatus")
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<long>("TotalCount")

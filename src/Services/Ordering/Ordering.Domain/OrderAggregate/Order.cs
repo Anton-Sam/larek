@@ -7,7 +7,7 @@ public sealed class Order : AggregateRoot<Guid>
     public Guid BuyerId { get; private set; }
     public Address Address { get; private set; }
     public DeliveryType DeliveryType { get; private set; }
-    public OrderStatus OrderStatus { get; private set; }
+    public OrderStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public uint TotalCount { get; private set; }
@@ -22,7 +22,7 @@ public sealed class Order : AggregateRoot<Guid>
         BuyerId = buyerId;
         Address = address;
         DeliveryType = deliveryType;
-        OrderStatus = OrderStatus.Confirmed;
+        Status = OrderStatus.Confirmed;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
@@ -60,20 +60,26 @@ public sealed class Order : AggregateRoot<Guid>
 
     public void Cancel()
     {
-        if (OrderStatus == OrderStatus.Confirmed)
+        if (Status != OrderStatus.Confirmed)
         {
-            OrderStatus = OrderStatus.Canceled;
-            UpdatedAt = DateTime.UtcNow;
+            throw new DomainException(
+                string.Format("Invalid order status: {0}", Status));
         }
+
+        Status = OrderStatus.Canceled;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void Fill()
     {
-        if (OrderStatus == OrderStatus.Confirmed)
+        if (Status != OrderStatus.Confirmed)
         {
-            OrderStatus = OrderStatus.Filled;
-            UpdatedAt = DateTime.UtcNow;
+            throw new DomainException(
+                string.Format("Invalid order status: {0}", Status));
         }
+
+        Status = OrderStatus.Filled;
+        UpdatedAt = DateTime.UtcNow;
     }
 
 #pragma warning disable CS8618
