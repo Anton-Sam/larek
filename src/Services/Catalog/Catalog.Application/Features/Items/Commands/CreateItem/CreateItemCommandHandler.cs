@@ -1,6 +1,8 @@
-﻿using Catalog.Application.Common.Data;
+﻿using BuildingBlocks.Application.Exceptions;
+using Catalog.Application.Common.Data;
 using Catalog.Domain.ItemAggregate;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Application.Features.Items.Commands.CreateItem;
 
@@ -15,6 +17,26 @@ public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, Item>
 
     public async Task<Item> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
+        var brand = await _dbContext.Brands
+            .FirstOrDefaultAsync(
+            b => b.Id == request.BrandId,
+            cancellationToken);
+
+        if (brand is null)
+        {
+            throw new NotFoundException("Brand not found");
+        }
+
+        var category = await _dbContext.Categories
+            .FirstOrDefaultAsync(
+            c => c.Id == request.CategoryId,
+            cancellationToken);
+
+        if (category is null)
+        {
+            throw new NotFoundException("Category not found");
+        }
+
         var item = Item.Create(
             request.BrandId,
             request.CategoryId,

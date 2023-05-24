@@ -1,5 +1,6 @@
 ﻿using Catalog.Application.Features.Items.Commands.CreateItem;
 using Catalog.Application.Features.Items.Commands.UpdateAvailableItemCount;
+using Catalog.Application.Features.Items.Queries.GetItemById;
 using Catalog.Application.Features.Items.Queries.GetItems;
 using Catalog.WebApi.Dtos.Requests.Items;
 using Catalog.WebApi.Dtos.Responses.Items;
@@ -48,8 +49,7 @@ public class ItemsController : ApiController
                 request.Description,
                 request.Count));
 
-        //TODO
-        return Created("", new ItemResponse(
+        return CreatedAtAction(nameof(GetItem), new { Id = item.Id }, new ItemResponse(
             item.Id,
             item.BrandId,
             item.CategoryId,
@@ -58,6 +58,28 @@ public class ItemsController : ApiController
             item.Description,
             item.AvailableCount,
             item.ReservedCount));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetItem(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var item = await Sender.Send(
+            new GetItemByIdQuery(id),
+            cancellationToken);
+
+        var response = new ItemResponse(
+            item.Id,
+            item.BrandId,
+            item.CategoryId,
+            item.Price,
+            item.Name,
+            item.Description,
+            item.AvailableCount,
+            item.ReservedCount);
+
+        return Ok(response);
     }
 
     [HttpPut]

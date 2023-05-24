@@ -1,9 +1,12 @@
 ﻿using Catalog.Application.Features.Categories.Commands.CreateCategory;
 using Catalog.Application.Features.Categories.Queries.GetAllCategories;
+using Catalog.Application.Features.Categories.Queries.GetCategoryById;
 using Catalog.WebApi.Dtos.Requests.Categories;
 using Catalog.WebApi.Dtos.Responses.Categories;
+using Catalog.WebApi.Dtos.Responses.Items;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 
 namespace Catalog.WebApi.Controllers;
 
@@ -32,7 +35,21 @@ public class CategoriesController : ApiController
             new CreateCategoryCommand(request.Name),
             cancellationToken);
 
-        //TODO 
-        return Created("", result);
+        return CreatedAtAction(
+            nameof(GetCategory),
+            new { Id = result.Id },
+            result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetCategory(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var category = await Sender.Send(
+            new GetCategoryByIdQuery(id),
+            cancellationToken);
+
+        return Ok(new CategoryResponse(category.Id, category.Name));
     }
 }

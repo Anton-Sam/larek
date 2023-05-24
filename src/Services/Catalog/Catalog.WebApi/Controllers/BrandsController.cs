@@ -1,7 +1,10 @@
 ﻿using Catalog.Application.Features.Brands.Commands.CreateBrand;
 using Catalog.Application.Features.Brands.Queries.GetAllBrands;
+using Catalog.Application.Features.Brands.Queries.GetBrandById;
+using Catalog.Application.Features.Categories.Queries.GetCategoryById;
 using Catalog.WebApi.Dtos.Requests.Brands;
 using Catalog.WebApi.Dtos.Responses.Brands;
+using Catalog.WebApi.Dtos.Responses.Categories;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +33,22 @@ public class BrandsController : ApiController
             new CreateBrandCommand(request.Name),
             cancellationToken);
 
-        //TODO 
-        return Created("", result);
+        return CreatedAtAction(
+            nameof(GetBrand),
+            new { Id = result.Id },
+            result);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetBrand(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        var brand = await Sender.Send(
+            new GetBrandByIdQuery(id),
+            cancellationToken);
+
+        return Ok(new BrandResponse(brand.Id, brand.Name));
+    }
+
 }
