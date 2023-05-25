@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+    
+  catalog-data:
+    image: postgres
+    hostname: catalog-data
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+    ports:
+      - 6001:5432
+
+  order-data:
+    image: postgres
+    hostname: order-data
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+    ports:
+      - 6002:5432
+
+  delivery-data:
+    image: postgres
+    hostname: delivery-data
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+    ports:
+      - 6003:5432
+  
+  catalog-api:
+    build:
+      context: .
+      dockerfile: src/Services/Catalog/Catalog.WebApi/Dockerfile
+    depends_on:
+      - catalog-data
+    ports:
+      - 5001:80
+
+  order-api:
+    build:
+      context: .
+      dockerfile: src/Services/Ordering/Ordering.WebApi/Dockerfile
+    depends_on:
+      - order-data
+    ports:
+      - 5002:80
+
+  delivery-api:
+    build:
+      context: .
+      dockerfile: src/Services/Delivering/Delivering.WebApi/Dockerfile
+    depends_on:
+      - delivery-data
+    ports:
+      - 5003:80
+
+  
+       
