@@ -1,5 +1,8 @@
-﻿using Catalog.Application.Features.Items.Commands.CreateItem;
-using Catalog.Application.Features.Items.Commands.UpdateAvailableItemCount;
+﻿using Catalog.Application.Features.Items.Commands.AddItems;
+using Catalog.Application.Features.Items.Commands.CreateItem;
+using Catalog.Application.Features.Items.Commands.ReleaseItems;
+using Catalog.Application.Features.Items.Commands.ReserveItems;
+using Catalog.Application.Features.Items.Commands.SellItems;
 using Catalog.Application.Features.Items.Queries.GetItemById;
 using Catalog.Application.Features.Items.Queries.GetItems;
 using Catalog.WebApi.Dtos.Requests.Items;
@@ -82,15 +85,54 @@ public class ItemsController : ApiController
         return Ok(response);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> UpdateAvailableCount(
-        [FromBody] UpdateAvailableItemsCountRequest request,
+    [HttpPatch("{id}/reserve/")]
+    public async Task<IActionResult> ReserveItems(
+        Guid id,
+        uint count,
         CancellationToken cancellationToken)
     {
         var _ = await Sender.Send(
-            new UpdateAvailableItemCountCommand(
-                request.ItemId,
-                request.Count), cancellationToken);
+            new ReserveItemsCommand(id, count),
+            cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPatch("{id}/release")]
+    public async Task<IActionResult> ReleaseItems(
+        Guid id,
+        uint count,
+        CancellationToken cancellationToken)
+    {
+        var _ = await Sender.Send(
+            new ReleaseItemsCommand(id, count),
+            cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPatch("{id}/sell")]
+    public async Task<IActionResult> SellItems(
+        Guid id,
+        uint count,
+        CancellationToken cancellationToken)
+    {
+        var _ = await Sender.Send(
+            new SellItemsCommand(id, count),
+            cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPatch("{id}/add")]
+    public async Task<IActionResult> AddItems(
+        Guid id,
+        uint count,
+        CancellationToken cancellationToken)
+    {
+        var _ = await Sender.Send(
+            new AddItemsCommand(id, count),
+            cancellationToken);
 
         return Ok();
     }
