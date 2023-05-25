@@ -1,4 +1,6 @@
-﻿namespace Delivering.WebApi;
+﻿using System.Reflection;
+
+namespace Delivering.WebApi;
 
 public static class DependencyInjection
 {
@@ -7,7 +9,11 @@ public static class DependencyInjection
     {
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(options =>
+        {
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        });
 
         return services;
     }
