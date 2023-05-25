@@ -7,6 +7,7 @@ public sealed class Order : AggregateRoot<Guid>
     public Guid BuyerId { get; private set; }
     public Address Address { get; private set; }
     public DeliveryType DeliveryType { get; private set; }
+    public DateTime? DeliveryDate { get; private set; }
     public OrderStatus Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
@@ -16,7 +17,7 @@ public sealed class Order : AggregateRoot<Guid>
 
 
     private readonly List<OrderItem> _items = new();
-    private Order(Guid buyerId, Address address, DeliveryType deliveryType)
+    private Order(Guid buyerId, Address address, DeliveryType deliveryType, DateTime? deliveryDate = null)
         : base(Guid.NewGuid())
     {
         BuyerId = buyerId;
@@ -25,14 +26,25 @@ public sealed class Order : AggregateRoot<Guid>
         Status = OrderStatus.Confirmed;
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        DeliveryDate = deliveryDate;
     }
 
-    public static Order Create(
+    public static Order CreatePickupOrder(
+        Guid buyerId,
+        Address address)
+    {
+        return new Order(buyerId, address, DeliveryType.Pickup);
+    }
+
+    public static Order CreateDeliveryOrder(
         Guid buyerId,
         Address address,
-        DeliveryType deliveryType)
+        DateTime? deliveryDate)
     {
-        return new Order(buyerId, address, deliveryType);
+        if (!deliveryDate.HasValue)
+            throw new DomainException("Delivery date is required");
+
+        return new Order(buyerId, address, DeliveryType.Delivery, deliveryDate);
     }
 
     public void AddOrderItem(
@@ -40,6 +52,13 @@ public sealed class Order : AggregateRoot<Guid>
         decimal price,
         uint count = 1)
     {
+        if (Status != OrderStatus.Confirmed)
+            throw new DomainException(
+                string.Format("Invalid order status: {0}", Status));
+
+        TotalCount += count;
+        TotalPrice += count * price;
+
         var existingItem = _items.SingleOrDefault(i => i.ItemId == itemId);
 
         if (existingItem is not null)
@@ -53,9 +72,6 @@ public sealed class Order : AggregateRoot<Guid>
                 price,
                 count);
         _items.Add(item);
-
-        TotalCount += count;
-        TotalPrice += count * price;
     }
 
     public void Cancel()

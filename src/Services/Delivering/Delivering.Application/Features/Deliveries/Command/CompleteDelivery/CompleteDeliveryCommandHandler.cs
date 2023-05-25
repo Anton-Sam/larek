@@ -10,10 +10,14 @@ public class CompleteDeliveryCommandHandler
     : IRequestHandler<CompleteDeliveryCommand, Delivery>
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IOrderService _orderService;
 
-    public CompleteDeliveryCommandHandler(IAppDbContext dbContext)
+    public CompleteDeliveryCommandHandler(
+        IAppDbContext dbContext,
+        IOrderService orderService)
     {
         _dbContext = dbContext;
+        _orderService = orderService;
     }
 
     public async Task<Delivery> Handle(
@@ -29,6 +33,9 @@ public class CompleteDeliveryCommandHandler
             throw new NotFoundException("Delivery not found");
 
         delivery.Complete();
+
+        await _orderService.CompleteOrderAsync(delivery.OrderId, cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return delivery;

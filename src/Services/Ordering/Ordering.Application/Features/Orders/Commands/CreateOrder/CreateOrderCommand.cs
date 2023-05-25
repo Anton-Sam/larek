@@ -10,4 +10,5 @@ public record CreateOrderCommand(
     string State,
     string Country,
     string ZipCode,
-    DeliveryType DeliveryType) : IRequest<Order>;
+    DeliveryType DeliveryType,
+    DateTime? DeliveryDate) : IRequest<Order>;

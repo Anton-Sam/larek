@@ -29,7 +29,8 @@ public class OrdersController : ApiController
             request.State,
             request.Country,
             request.ZipCode,
-            request.DeliveryType), cancellationToken);
+            request.DeliveryType,
+            request.DeliveryDate), cancellationToken);
 
         var items = order.Items.Select(i => new OrderItemResponse(
             i.ItemId,
@@ -47,6 +48,7 @@ public class OrdersController : ApiController
             order.TotalPrice,
             order.Status,
             order.DeliveryType,
+            order.DeliveryDate,
             items);
 
         return CreatedAtAction(
@@ -98,6 +100,7 @@ public class OrdersController : ApiController
                 ord.TotalPrice,
                 ord.Status,
                 ord.DeliveryType,
+                ord.DeliveryDate,
                 items);
         });
 
@@ -129,6 +132,7 @@ public class OrdersController : ApiController
             order.TotalPrice,
             order.Status,
             order.DeliveryType,
+            order.DeliveryDate,
             items);
 
         return Ok(response);

@@ -4,21 +4,20 @@ using Catalog.Domain.ItemAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Catalog.Application.Features.Items.Commands.UpdateAvailableItemCount;
+namespace Catalog.Application.Features.Items.Commands.ReleaseItems;
 
-public class UpdateAvailableItemCountCommandHandler
-    : IRequestHandler<UpdateAvailableItemCountCommand, Item>
+internal class ReleaseItemsCommandHandler
+    : IRequestHandler<ReleaseItemsCommand, Item>
 {
     private readonly IAppDbContext _dbContext;
 
-    public UpdateAvailableItemCountCommandHandler(
-        IAppDbContext dbContext)
+    public ReleaseItemsCommandHandler(IAppDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
     public async Task<Item> Handle(
-        UpdateAvailableItemCountCommand request,
+        ReleaseItemsCommand request,
         CancellationToken cancellationToken)
     {
         var item = await _dbContext.Items.FirstOrDefaultAsync(
@@ -28,8 +27,8 @@ public class UpdateAvailableItemCountCommandHandler
         if (item is null)
             throw new NotFoundException("Item not found");
 
-        item.AddItems(request.Count);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        item.Release(request.Count);
+        await _dbContext.SaveChangesAsync();
 
         return item;
     }
