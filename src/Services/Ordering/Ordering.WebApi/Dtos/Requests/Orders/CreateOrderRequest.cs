@@ -1,6 +1,4 @@
-﻿using Ordering.Domain.OrderAggregate;
-
-namespace Ordering.WebApi.Dtos.Requests.Orders;
+﻿namespace Ordering.WebApi.Dtos.Requests.Orders;
 
 public record CreateOrderRequest(
     Guid BuyerId,
@@ -9,5 +7,5 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    DeliveryType DeliveryType,
+    string DeliveryType,
     DateTime? DeliveryDate);
