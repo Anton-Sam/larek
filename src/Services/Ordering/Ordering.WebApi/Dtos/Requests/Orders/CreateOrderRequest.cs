@@ -9,4 +9,5 @@ public record CreateOrderRequest(
     string State,
     string Country,
     string ZipCode,
-    DeliveryType DeliveryType);
+    DeliveryType DeliveryType,
+    DateTime? DeliveryDate);

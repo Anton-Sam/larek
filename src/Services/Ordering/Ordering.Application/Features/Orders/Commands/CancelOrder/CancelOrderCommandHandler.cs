@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Common.Data;
+using Ordering.Application.Common.Interfaces;
 using Ordering.Domain.OrderAggregate;
 
 namespace Ordering.Application.Features.Orders.Commands.CancelOrder;
@@ -9,10 +10,14 @@ namespace Ordering.Application.Features.Orders.Commands.CancelOrder;
 public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Order>
 {
     private readonly IAppDbContext _dbContext;
+    private readonly ICatalogService _catalogService;
 
-    public CancelOrderCommandHandler(IAppDbContext dbContext)
+    public CancelOrderCommandHandler(
+        IAppDbContext dbContext,
+        ICatalogService catalogService)
     {
         _dbContext = dbContext;
+        _catalogService = catalogService;
     }
 
     public async Task<Order> Handle(
@@ -25,9 +30,14 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Ord
         if (order is null)
             throw new NotFoundException("Order not found");
 
-        //HTTP service
+        order.Cancel();
 
-        order.Fill();
+        var tasks = new List<Task>();
+        foreach (var item in order.Items)
+        {
+            tasks.Add(_catalogService.ReleaseItemsAsync(item.ItemId, item.UnitCount));
+        }
+        await Task.WhenAll(tasks);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 

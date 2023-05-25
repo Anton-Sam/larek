@@ -1,4 +1,5 @@
 ﻿using Ordering.Domain.OrderAggregate;
+using System.Text.Json.Serialization;
 
 namespace Ordering.WebApi.Dtos.Responses.Orders;
 
@@ -12,6 +13,7 @@ public record OrderResponse(
     string ZipCode,
     uint TotalCount,
     decimal TotalPrice,
-    OrderStatus Status,
-    DeliveryType DeliveryType,
+    [property: JsonConverter(typeof(JsonStringEnumConverter))] OrderStatus Status,
+    [property: JsonConverter(typeof(JsonStringEnumConverter))] DeliveryType DeliveryType,
+    DateTime? DeliveryDate,
     IEnumerable<OrderItemResponse> Items);

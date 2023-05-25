@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ordering.Application.Common.Data;
+using Ordering.Application.Common.Interfaces;
 using Ordering.Domain.OrderAggregate;
 
 namespace Ordering.Application.Features.Orders.Commands.CreateOrder;
@@ -9,10 +10,14 @@ namespace Ordering.Application.Features.Orders.Commands.CreateOrder;
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IDeliveryService _deliveryService;
 
-    public CreateOrderCommandHandler(IAppDbContext dbContext)
+    public CreateOrderCommandHandler(
+        IAppDbContext dbContext,
+        IDeliveryService deliveryService)
     {
         _dbContext = dbContext;
+        _deliveryService = deliveryService;
     }
 
     public async Task<Order> Handle(
@@ -32,7 +37,12 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Ord
             request.Country,
             request.ZipCode);
 
-        var order = Order.Create(request.BuyerId, addr, request.DeliveryType);
+        Order order = request.DeliveryType == DeliveryType.Delivery
+            ? Order.CreateDeliveryOrder(request.BuyerId, addr, request.DeliveryDate)
+            : Order.CreatePickupOrder(request.BuyerId, addr);
+
+        if (order.DeliveryType == DeliveryType.Delivery)
+            await _deliveryService.CreateDeliveryAsync(order);
 
         await _dbContext.Orders.AddAsync(order, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
