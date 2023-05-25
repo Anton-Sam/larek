@@ -1,5 +1,6 @@
 ﻿using Delivering.Application.Common.Data;
 using Delivering.Infrastructure.Data;
+using Delivering.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,10 @@ public static class DependencyInjection
             opt => opt.UseNpgsql(configuration.GetConnectionString("Npgsql")));
         services.AddScoped<IAppDbContext>(
             provider => provider.GetRequiredService<AppDbContext>());
+
+        services.AddScoped<IOrderService, OrderService>();
+        services.AddHttpClient<IOrderService, OrderService>(
+            client => client.BaseAddress = new Uri(configuration["OrderUrl"] ?? string.Empty));
 
         return services;
     }

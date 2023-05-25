@@ -10,10 +10,12 @@ public class CancelDeliveryCommandHandler
     : IRequestHandler<CancelDeliveryCommand, Delivery>
 {
     private readonly IAppDbContext _dbContext;
+    private readonly IOrderService _orderService;
 
-    public CancelDeliveryCommandHandler(IAppDbContext dbContext)
+    public CancelDeliveryCommandHandler(IAppDbContext dbContext, IOrderService orderService)
     {
         _dbContext = dbContext;
+        _orderService = orderService;
     }
 
     public async Task<Delivery> Handle(
@@ -29,6 +31,9 @@ public class CancelDeliveryCommandHandler
             throw new NotFoundException("Delivery not found");
 
         delivery.Cancel();
+
+        await _orderService.CancelOrderAsync(delivery.OrderId, cancellationToken);
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return delivery;

@@ -1,4 +1,5 @@
 ﻿using Delivering.Domain.DeliveryAggregate;
+using System.Text.Json.Serialization;
 
 namespace Delivering.WebApi.Dtos.Responses.Deliveries;
 
@@ -7,4 +8,4 @@ public record DeliveryResponse(
     Guid OrderId,
     Guid? CourierId,
     DateTime DeliveryDate,
-    DeliveryStatus Status);
+    [property: JsonConverter(typeof(JsonStringEnumConverter))] DeliveryStatus Status);
